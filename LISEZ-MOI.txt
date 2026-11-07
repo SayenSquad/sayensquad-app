@@ -1,0 +1,9 @@
+SAYENSQUAD - PROTOTYPE V2
+
+1. Décompressez le ZIP.
+2. Ouvrez index.html sur ordinateur pour découvrir la maquette interactive.
+3. Pour installer comme application sur téléphone, publiez le dossier complet sur un hébergement HTTPS compatible PWA.
+4. N'envoyez pas cette démo comme espace privé : aucune authentification, aucun contrôle d'accès, aucune base de données.
+5. Avant un déploiement réel : authentification par invitation, rôles, règles d'accès côté serveur, protection des données personnelles, sauvegardes et tests.
+
+Le logo original fourni est inclus dans assets/logo.jpg.
