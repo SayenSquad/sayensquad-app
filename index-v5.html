@@ -40,7 +40,13 @@
     <h3>📸 Gestion des photos SayenSquad</h3>
     <p>Publiez les souvenirs de nos événements dans la galerie publique.</p>
     <p class="muted">Publication réservée aux administrateurs.</p>
-    <div id="photoAdminTools"></div>
+    <div id="photoAdminTools" hidden>
+  <label for="photoFile">📸 Choisir une photo</label>
+  <input type="file" id="photoFile" accept="image/*">
+  <label for="photoCaption">✍️ Description</label>
+  <input type="text" id="photoCaption" placeholder="Ex : Rassemblement SayenSquad">
+  <button type="button" id="publishPhoto">💚 Publier la photo</button>
+</div>
     <p id="photoAdminStatus" class="muted"></p>
   </div>
 </section><p class="foot">SAYENSQUAD • Version pilote V5 • Calendrier Supabase</p></div></main><script>
@@ -166,5 +172,27 @@ loadPublicEvents();
 }
 
 loadPublicPhotos();
+async function initPhotoAdmin() {
+  if (!client) return;
+
+  const { data: { user }, error } = await client.auth.getUser();
+  if (error || !user) return;
+
+  const { data: admin, error: adminError } = await client
+    .from('squad_members')
+    .select('role')
+    .eq('user_id', user.id)
+    .eq('active', true)
+    .eq('role', 'admin')
+    .maybeSingle();
+
+  if (adminError || !admin) return;
+
+  $('photoAdminTools').hidden = false;
+  $('photoAdminStatus').textContent = '✅ Accès administrateur confirmé';
+}client?.auth.onAuthStateChange(() => {
+  setTimeout(initPhotoAdmin, 0);
+});
+initPhotoAdmin();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
 </script></body></html>
