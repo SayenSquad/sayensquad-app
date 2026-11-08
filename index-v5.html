@@ -166,7 +166,6 @@ loadPublicEvents();
     image.loading = 'lazy';
     image.style.cssText =
       'width:100%;border-radius:15px;margin-top:12px;';
-
     galerie.appendChild(image);
   }
 }
@@ -190,9 +189,63 @@ async function initPhotoAdmin() {
 
   $('photoAdminTools').hidden = false;
   $('photoAdminStatus').textContent = '✅ Accès administrateur confirmé';
-}client?.auth.onAuthStateChange(() => {
+}
+  client?.auth.onAuthStateChange(() => {
   setTimeout(initPhotoAdmin, 0);
 });
-initPhotoAdmin();
+  initPhotoAdmin();const photoTools = $('photoAdminTools');
+
+photoTools.innerHTML = `
+  <input id="photoFile" type="file" accept="image/*">
+  <input id="photoCaption" type="text"
+    placeholder="Description de la photo">
+  <button id="publishPhoto" type="button">
+    💚 Publier la photo
+  </button>
+`;
+
+$('publishPhoto').onclick = async () => {
+  const file = $('photoFile').files[0];
+  const status = $('photoAdminStatus');
+
+  if (!file) {
+    status.textContent = '⚠️ Choisis une photo.';
+    return;
+  }
+
+  const { data: { user } } = await client.auth.getUser();
+  if (!user) return;
+
+  const path = `${user.id}/${crypto.randomUUID()}-${file.name}`;
+
+  status.textContent = '⏳ Publication en cours...';
+
+  const { error: uploadError } = await client.storage
+    .from('sayensquad-photos')
+    .upload(path, file);
+
+  if (uploadError) {
+    status.textContent = '❌ ' + uploadError.message;
+    return;
+  }
+
+  const { error: dbError } = await client
+    .from('squad_photos')
+    .insert({
+      file_path: path,
+      caption: $('photoCaption').value,
+      created_by: user.id
+    });
+
+  if (dbError) {
+    status.textContent = '❌ ' + dbError.message;
+    return;
+  }
+
+  status.textContent = '✅ Photo publiée !';
+  $('photoFile').value = '';
+  $('photoCaption').value = '';
+  loadPublicPhotos();
+};
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
 </script></body></html>
