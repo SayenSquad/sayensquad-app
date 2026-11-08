@@ -125,14 +125,38 @@ calendarLabel();
 // Supabase est configuré ci-dessus avec sa clé publique et ses règles RLS.
 loadPublicEvents();
   // Galerie publique SayenSquad
-  const galerie = document.getElementById('galerie-publique');
+  async function loadPublicPhotos() {
+  const galerie = document.getElementById('photos-dynamiques');
+  if (!galerie || !client) return;
 
-if (galerie) {
-  const photo = document.createElement('img');
-  photo.src = 'https://gdehlhxgvenkbcycrbfm.supabase.co/storage/v1/object/public/sayensquad-photos/FB_IMG_1790704604252.jpg';
-  photo.alt = 'Rassemblement SayenSquad';
-  photo.style.cssText = 'width:100%;border-radius:15px;margin-top:12px;';
-  galerie.appendChild(photo);
+  const { data, error } = await client
+    .from('squad_photos')
+    .select('file_path, caption')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Erreur galerie :', error);
+    return;
+  }
+
+  galerie.replaceChildren();
+
+  for (const photo of data || []) {
+    const image = document.createElement('img');
+
+    image.src = client.storage
+      .from('sayensquad-photos')
+      .getPublicUrl(photo.file_path).data.publicUrl;
+
+    image.alt = photo.caption || 'Photo SayenSquad';
+    image.loading = 'lazy';
+    image.style.cssText =
+      'width:100%;border-radius:15px;margin-top:12px;';
+
+    galerie.appendChild(image);
+  }
 }
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+loadPublicPhotos();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(console.error);
 </script></body></html>
