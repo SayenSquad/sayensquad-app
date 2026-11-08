@@ -10,7 +10,7 @@
     <button class="public-tile" type="button" data-public-target="association-publique"><span class="emoji">🐉</span><strong>Association</strong><small>Notre histoire</small></button>
   </div>
   <div class="panel public-section" id="galerie-publique" style="margin-top:14px"><h3>📸 Galerie SayenSquad</h3><p>Nos rassemblements, nos souvenirs, notre passion 💚</p>
-<img src="https://gdehlhxgvenkbcycrbfm.supabase.co/storage/v1/object/public/sayensquad-photos/FB_IMG_1790704604252.jpg" alt="Rassemblement SayenSquad" style="width:100%;border-radius:15px;margin-top:12px;"><div id="photos-dynamiques"></div></div>
+src="https://gdehlhxgvenkbcycrbfm.supabase.co/storage/v1/object/public/sayensquad-photos/FB_IMG_1790704604252.jpg" alt="Rassemblement SayenSquad" style="width:100%;border-radius:15px;margin-top:12px;"><div id="photos-dynamiques"></div></div>
   <div class="panel public-section" id="solidarite-publique"><h3>💜 Ensemble, pour les autres</h3><p>Notre passion automobile nous réunit pour soutenir des initiatives solidaires et partager des moments qui comptent.</p></div>
   <div class="panel public-section" id="association-publique">
     <span class="public-label">🐉 NOTRE HISTOIRE</span>
@@ -124,5 +124,15 @@ $('toggleLogin').onclick=()=>{const open=$('authPanel').classList.toggle('open')
 calendarLabel();
 // Supabase est configuré ci-dessus avec sa clé publique et ses règles RLS.
 loadPublicEvents();
+  // Galerie publique SayenSquad
+  const galerie = document.getElementById('galerie-publique');
+
+if (galerie) {
+  const photo = document.createElement('img');
+  photo.src = 'https://gdehlhxgvenkbcycrbfm.supabase.co/storage/v1/object/public/sayensquad-photos/FB_IMG_1790704604252.jpg';
+  photo.alt = 'Rassemblement SayenSquad';
+  photo.style.cssText = 'width:100%;border-radius:15px;margin-top:12px;';
+  galerie.appendChild(photo);
+}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script></body></html>
